@@ -2,29 +2,39 @@ package com.tsvirko.urlshortener.task;
 
 import com.tsvirko.urlshortener.domain.entity.Url;
 import com.tsvirko.urlshortener.repository.UrlRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PreDestroy;
+
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class CheckRankStatusTask {
 
-    @Autowired
-    UrlRepository urlRepository;
+    private final UrlRepository urlRepository;
 
-    @Scheduled(fixedDelay = 60000)
+    private final ScheduledAnnotationBeanPostProcessor postProcessor;
+
+    @Scheduled(fixedRateString = "${fixedDelay.milliseconds}")
     @Transactional
     public void checkRankStatus() {
-        var links = urlRepository.findAllByCount();
+        var links = urlRepository.sortAllByCount();
         int i = 1;
         for (Url url : links) {
             url.setRank(i);
-            urlRepository.saveAndFlush(url);
             i++;
         }
+        urlRepository.saveAll(links);
         log.info("Check URL rank status successful");
+    }
+
+    @PreDestroy
+    public void stopThis() {
+     postProcessor.postProcessBeforeDestruction(this, "");
     }
 }

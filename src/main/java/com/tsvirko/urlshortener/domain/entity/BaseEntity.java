@@ -19,7 +19,7 @@ import java.util.UUID;
 public abstract class BaseEntity {
     @Id
     @Type(type = "pg-uuid")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private UUID id;
 }
 

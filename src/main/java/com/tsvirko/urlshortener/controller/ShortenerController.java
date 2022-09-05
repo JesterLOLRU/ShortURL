@@ -7,24 +7,25 @@ import com.tsvirko.urlshortener.service.StatService;
 import com.tsvirko.urlshortener.service.UrlService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RequestMapping("/url")
 @RestController
+@Validated
 @Tag(name = "URL Shortener Controller", description = "Controller for URL Shortener")
 public class ShortenerController {
 
-    @Autowired
-    private UrlService shortenerUrlService;
+    private final UrlService shortenerUrlService;
 
-    @Autowired
-    private StatService statService;
+    private final StatService statService;
 
     @PostMapping(path = "/generate")
     @Operation(summary = "Short URL")
@@ -46,8 +47,8 @@ public class ShortenerController {
 
     @GetMapping(path = "/stats/")
     @Operation(summary = "Get stat of all URLs")
-    public List<Url> getAllStat(@RequestParam Integer page,
-                                @RequestParam Integer count) {
+    public List<Url> getAllStat(@NotNull @Min(0) @RequestParam Integer page,
+                                @NotNull @Min(1) @RequestParam Integer count) {
         return statService.getAllStat(page, count);
     }
 

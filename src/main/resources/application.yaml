@@ -10,3 +10,6 @@ spring:
       ddl-auto: none
   liquibase:
     change-log: classpath:db.changelog/liquibase-changelog.xml
+fixedDelay:
+  milliseconds: 60000
+

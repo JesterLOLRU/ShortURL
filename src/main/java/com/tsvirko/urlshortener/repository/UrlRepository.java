@@ -21,5 +21,5 @@ public interface UrlRepository extends JpaRepository<Url, UUID> {
     void addCount(@Param("link") String link);
 
     @Query("SELECT u FROM Url u ORDER BY u.count DESC")
-    List<Url> findAllByCount();
+    List<Url> sortAllByCount();
 }
