@@ -3,7 +3,6 @@
 ## Технический стек
 * Java 11
 * Spring Boot
-* Spring Cloud
 * Maven
 * PostgreSql
 * Liquibase
